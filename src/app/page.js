@@ -1,95 +1,66 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import styled from "styled-components";
 
 export default function Home() {
+  const cardX = useMotionValue(0);
+  const cardY = useMotionValue(0);
+  const rotateX = useTransform(cardY, [-300, 300], [10, -10]);
+  const rotateY = useTransform(cardX, [-300, 300], [-10, 10]);
+  const cardRotateX = useTransform(cardY, [-300, 300], [25, -25]);
+  const cardRotateY = useTransform(cardX, [-300, 300], [-25, 25]);
+
+  const handleMouseMove = (event) => {
+    const offsetX = event.clientX - window.innerWidth / 2;
+    const offsetY = event.clientY - window.innerHeight / 2;
+
+    cardX.set(offsetX);
+    cardY.set(offsetY);
+  };
+
+  const handleMouseLeave = () => {
+    cardX.set(0);
+    cardY.set(0);
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    <Main onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+      <CardWrapper style={{ rotateX, rotateY }} transition={{ velocity: 0 }}>
+        <Card style={{ cardRotateX, cardRotateY }} />
+      </CardWrapper>
+    </Main>
+  );
 }
+
+const Main = styled(motion.main)`
+  perspective: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+`;
+
+const CardWrapper = styled(motion.div)`
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  perspective: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Card = styled(motion.div)`
+  width: 554px;
+  height: 268px;
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0.5);
+  background: url(./frente.jpg);
+  display: flex;
+  transform-style: preserve-3d;
+  boxshadow: 0px 0px 30px -7px rgba(0, 0, 0, 0.45);
+  perspective: 800px;
+`;
